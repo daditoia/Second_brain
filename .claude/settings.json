@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Read",
+      "Bash(find *)",
+      "Bash(ls *)",
+      "Bash(mv 00_Inbox/* 60_Archive/*)"
+    ]
+  }
+}

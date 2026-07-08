@@ -4,3 +4,4 @@
 *.swo
 *~
 .trash/
+.claude/settings.local.json

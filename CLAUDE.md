@@ -1,24 +1,20 @@
 # Agent Instructions — Second Brain Vault
 
-## Bootstrap mode
+## Who you are
 
-If `50_System/entity-registry.md` is empty or contains only the template header, enter bootstrap mode:
+_This section is populated by `/bootstrap`. Replace with your name, role, team, and reporting line._
 
-1. Ask the user:
-   - Their full name and role/title
-   - Their team name and manager's name
-   - 5-10 key people they work with (name + role + relationship)
-   - 3-5 key products, systems, or projects in their domain
-   - Any acronyms or glossary terms specific to their org
-2. Generate:
-   - `50_System/entity-registry.md` populated with all named entities
-   - Person pages in `20_People/` for the user and each person named
-   - Wiki stub pages in `40_Wiki/` for each product/system/team
-   - `40_Wiki/Acronyms and Glossary.md` with their domain terms
-   - Update `40_Wiki/index.md` with all new pages
-3. Confirm with the user that everything looks correct before proceeding.
+---
 
-After bootstrap, switch to normal operating mode below.
+## Commands
+
+This vault ships with slash commands in `.claude/commands/`:
+
+| Command | Purpose |
+|---------|---------|
+| `/bootstrap` | One-time setup. Generates entity registry, person pages, and wiki stubs based on your answers. |
+| `/ingest` | Processes `00_Inbox/` into structured vault output. The core workflow. |
+| `/lint` | Health-checks the vault: orphan pages, broken links, naming violations, stale data. |
 
 ---
 

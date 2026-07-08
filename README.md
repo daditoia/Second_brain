@@ -11,7 +11,7 @@ Based on Andrej Karpathy's "LLM OS" concept, extended with typed templates, enti
 ### 1. Clone this repo
 
 ```bash
-git clone <this-repo-url> my-vault
+git clone https://gitlab.devops.telekom.de/davide.cazzola/second_brain.git my-vault
 cd my-vault
 ```
 
@@ -19,12 +19,16 @@ cd my-vault
 
 Works with [Obsidian](https://obsidian.md) (recommended for wikilinks and graph view), VS Code, or any Markdown editor.
 
-### 3. Run the bootstrap
+### 3. Install Claude Code
 
-Open the vault in [Claude Code](https://docs.anthropic.com/en/docs/claude-code) and say:
+You need [Claude Code](https://docs.anthropic.com/en/docs/claude-code) (CLI or VS Code extension). This is the processing engine that turns raw notes into structured knowledge.
+
+### 4. Bootstrap your vault
+
+Open the vault in Claude Code and run:
 
 ```
-Bootstrap this vault for me.
+/bootstrap
 ```
 
 The agent will ask you:
@@ -32,15 +36,16 @@ The agent will ask you:
 - Your team and manager
 - 5-10 key people you work with
 - Key products/systems in your domain
+- Domain-specific acronyms
 
 It then generates your personalized entity registry, starter person pages, and wiki stubs.
 
-### 4. Start using it
+### 5. Start using it
 
-Drop meeting transcripts, screenshots, or raw notes into `00_Inbox/`. When ready, tell the agent:
+Drop meeting transcripts, screenshots, or raw notes into `00_Inbox/`. When ready:
 
 ```
-Process inbox.
+/ingest
 ```
 
 ---
@@ -70,19 +75,38 @@ Process inbox.
 
 ---
 
+## Commands
+
+The vault ships with Claude Code slash commands in `.claude/commands/`. These are the core workflows:
+
+| Command | What it does |
+|---------|--------------|
+| `/bootstrap` | One-time setup. Asks about your role, team, and key people, then generates entity registry and starter pages. |
+| `/ingest` | Processes everything in `00_Inbox/`. Classifies items, presents a plan, waits for confirmation, then writes structured output across meetings, people, wiki, and logs. |
+| `/lint` | Health-checks the vault. Finds orphan pages, broken links, naming violations, stale data, and missing cross-references. Reports issues and asks which to fix. |
+
+### How commands work
+
+Claude Code slash commands are markdown files in `.claude/commands/`. When you type `/ingest` in a Claude Code session, the agent reads the command file and follows its instructions. No plugins or extensions needed.
+
+You can add your own commands by creating new `.md` files in `.claude/commands/`.
+
+---
+
 ## The ingest workflow
 
 ```
 1. Read every unprocessed file in 00_Inbox/.
 2. Identify type: meeting, person info, topic info, decision, or mixed.
 3. Raise questions if content is ambiguous or contradicts existing knowledge.
-4. Write output files using the correct template.
-5. Update all affected files: person pages, wiki entities, logs.
-6. Append to 30_Logs/ (actions, open questions, decisions).
-7. Append to 40_Wiki/log.md (audit trail).
-8. Update 40_Wiki/index.md if new pages were created.
-9. Move processed inbox file to 60_Archive/.
-10. Surface any naming conflicts or discrepancies.
+4. Present a plan and wait for confirmation.
+5. Write output files using the correct template.
+6. Update all affected files: person pages, wiki entities, logs.
+7. Append to 30_Logs/ (actions, open questions, decisions).
+8. Append to 40_Wiki/log.md (audit trail).
+9. Update 40_Wiki/index.md if new pages were created.
+10. Move processed inbox file to 60_Archive/.
+11. Surface any naming conflicts or discrepancies.
 ```
 
 ### What the agent asks about vs. does silently
@@ -115,12 +139,13 @@ The key insight: the LLM is not a database. It is a **processing engine** that t
 
 ```
 Morning:     Drop yesterday's meeting transcripts into 00_Inbox/
-Trigger:     "Process inbox" — agent runs the full ingest workflow
+Trigger:     /ingest — agent runs the full ingest workflow
 Review:      Agent surfaces conflicts or ambiguities. You answer.
 Query:       "What do we know about X?"
              "What actions are open for person Y?"
              "What decisions have we made about Z?"
 Author:      "Write a PRD for initiative X" — agent uses templates + context
+Periodic:    /lint — finds dead links, orphan pages, stale data
 ```
 
 ---
@@ -130,6 +155,20 @@ Author:      "Write a PRD for initiative X" — agent uses templates + context
 - Edit `CLAUDE.md` to change agent behavior, add domain-specific glossary terms, or adjust writing style rules.
 - Edit templates in `70_Templates/` to match your note-taking style.
 - Add new log types to `30_Logs/` if your workflow needs them.
+- Add new commands in `.claude/commands/` for your own workflows.
+
+---
+
+## What to drop in the inbox
+
+The agent handles diverse input formats:
+
+- **Meeting transcripts** — from Plaud, Otter, Teams, or manual notes. Speaker labels help but aren't required.
+- **Screenshots** — Teams call participant lists, org charts, Slack threads. The agent reads images.
+- **Raw notes** — bullet points, free-form text, copy-pasted Slack conversations.
+- **Announcements** — reorg emails, role changes, new-hire intros.
+
+The agent classifies and routes each item to the right output structure.
 
 ---
 
