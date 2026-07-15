@@ -11,7 +11,7 @@ Based on Andrej Karpathy's "LLM OS" concept, extended with typed templates, enti
 ### 1. Clone this repo
 
 ```bash
-git clone https://gitlab.devops.telekom.de/davide.cazzola/second_brain.git my-vault
+git clone https://github.com/daditoia/Second_brain.git my-vault
 cd my-vault
 ```
 
